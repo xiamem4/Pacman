@@ -26,6 +26,11 @@ public class Terrain {
 
         for (int ligne = 0; ligne < laby.length; ligne++) {
             grille[ligne] = laby[ligne].toCharArray();
+            for (int col = 0; col < grille[ligne].length; col++) {
+                if (grille[ligne][col] == '.') {
+                    pacgommes.add(new PacGomme(col, ligne));
+                }
+            }
         }
     }
 

@@ -67,11 +67,18 @@ public class Jeu extends JFrame {
         this.aleaFantome = new Fantome(x, y);
     }
 
-    // Calculer la MAJ des déplacements
+    // Calculer la MAJ des déplacements et détection de la victoire
     public void mettreAJour() {
         // Pacman
         if (pacman != null) {
             pacman.bouger(terrain);
+            if (terrain.getGommes().isEmpty()) {
+                rafraichir();
+                arreter();
+                JOptionPane.showMessageDialog(this, "Félicitations, vous avez gagné !", "Victoire", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+                return;
+            }
         }
 
         // Fantome aléatoire
