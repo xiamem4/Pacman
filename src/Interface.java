@@ -17,12 +17,15 @@ public class Interface extends JFrame {
         add(hudPanel, BorderLayout.NORTH);
 
         // Le jeu
-        Jeu jeuPanel = new Jeu(this);
+        jeuPanel = new Jeu(this);
         add(jeuPanel, BorderLayout.CENTER);
 
         setResizable(false);
+        setLocationRelativeTo(null);
         pack();
         setVisible(true);
+
+        jeuPanel.requestFocusInWindow();
     }
 
     public void updateVie(int v) {

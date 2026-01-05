@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.event.*;
+import java.awt.*;
 import java.util.*;
 
-public class Jeu extends JFrame {
+public class Jeu extends JPanel {
 
     private Terrain terrain;
     private ZoneDeJeu zoneDeJeu;
@@ -23,12 +24,12 @@ public class Jeu extends JFrame {
 
         this.hudPanel = hudPanel;
 
+        setLayout(new BorderLayout());
         terrain = new Terrain();
         zoneDeJeu = new ZoneDeJeu(terrain, pacman, aleaFantome);
         enCours = true;
 
         int[] pos = terrain.getPositionPacman();
-
         departX = pos[0];
         departY = pos[1];
 
@@ -37,14 +38,8 @@ public class Jeu extends JFrame {
         ajouterFantomeAleatoire();
         zoneDeJeu.setAleaFantome(aleaFantome);
 
-        setTitle("Pacman");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-
         setFocusable(true);
         add(zoneDeJeu);
-        pack();
-        setLocationRelativeTo(null);
         setVisible(true);
 
         // Gestion des touches et du déplacement
