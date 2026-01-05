@@ -7,13 +7,21 @@ public class EntiteMouvante {
         this.y = y;
     }
 
-    // Getters de position
+    // Getters et Setters de position
     public int getX() {
         return x;
     }
 
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     // Définir une direction

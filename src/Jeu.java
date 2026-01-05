@@ -12,6 +12,8 @@ public class Jeu extends JFrame {
     private int vies = 3;
     private int compteurInvincibilite = 0;
     private Interface hudPanel;
+    private int departX;
+    private int departY;
 
     /**
      * Initialise le jeu :
@@ -26,7 +28,11 @@ public class Jeu extends JFrame {
         enCours = true;
 
         int[] pos = terrain.getPositionPacman();
-        pacman = new Pacman(pos[0], pos[1]);
+
+        departX = pos[0];
+        departY = pos[1];
+
+        pacman = new Pacman(departX, departY);
         zoneDeJeu.setPacman(pacman);
         ajouterFantomeAleatoire();
         zoneDeJeu.setAleaFantome(aleaFantome);
@@ -118,6 +124,12 @@ public class Jeu extends JFrame {
     public void perdreVie() {
         vies--;
         hudPanel.updateVie(vies);
+
+        if (vies > 0) {
+            terrain.deplacerPacman(pacman.getX(), pacman.getY(), departX, departY);
+            pacman.setX(departX);
+            pacman.setY(departY);
+        }
 
         // Défaites
         if (vies <= 0) {
