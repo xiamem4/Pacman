@@ -1,6 +1,5 @@
 import javax.swing.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.*;
 
 public class Jeu extends JFrame {
@@ -12,12 +11,15 @@ public class Jeu extends JFrame {
     private boolean enCours;
     private int vies = 3;
     private int compteurInvincibilite = 0;
+    private Interface hudPanel;
 
     /**
      * Initialise le jeu :
      */
 
-    public Jeu() {
+    public Jeu(Interface hudPanel) {
+
+        this.hudPanel = hudPanel;
 
         terrain = new Terrain();
         zoneDeJeu = new ZoneDeJeu(terrain, pacman, aleaFantome);
@@ -33,6 +35,7 @@ public class Jeu extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
+        setFocusable(true);
         add(zoneDeJeu);
         pack();
         setLocationRelativeTo(null);
@@ -106,17 +109,22 @@ public class Jeu extends JFrame {
 
             // Si collisions
             if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY() && compteurInvincibilite == 0) {
-                vies--;
+                perdreVie();
                 compteurInvincibilite = 10;
-
-                // Défaites
-                if (vies <= 0) {
-                    rafraichir();
-                    arreter();
-                    JOptionPane.showMessageDialog(this, "Game Over ! Vous avez perdu.", "Défaite", JOptionPane.ERROR_MESSAGE);
-                    System.exit(0);
-                }
             }
+        }
+    }
+
+    public void perdreVie() {
+        vies--;
+        hudPanel.updateVie(vies);
+
+        // Défaites
+        if (vies <= 0) {
+            rafraichir();
+            arreter();
+            JOptionPane.showMessageDialog(this, "Game Over ! Vous avez perdu.", "Défaite", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
         }
     }
 
@@ -133,14 +141,5 @@ public class Jeu extends JFrame {
     // Arrêter le jeu
     public void arreter() {
         enCours = false;
-    }
-
-    public static void main(String[] args) {
-
-        Jeu jeu = new Jeu();
-        Processus processus = new Processus(jeu);
-
-        Thread thread = new Thread(processus);
-        thread.start();
     }
 }
