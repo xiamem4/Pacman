@@ -10,6 +10,8 @@ public class Jeu extends JFrame {
     private Pacman pacman;
     private Fantome aleaFantome;
     private boolean enCours;
+    private int vies = 3;
+    private int compteurInvincibilite = 0;
 
     /**
      * Initialise le jeu :
@@ -67,24 +69,54 @@ public class Jeu extends JFrame {
         this.aleaFantome = new Fantome(x, y);
     }
 
-    // Calculer la MAJ des déplacements et détection de la victoire
+    // Calculer la MAJ des déplacements, la victoire ET la défaite
     public void mettreAJour() {
+
+        // Gestion du temps d'invincibilité
+        if (compteurInvincibilite > 0) {
+            compteurInvincibilite--;
+        }
+
         // Pacman
+
         if (pacman != null) {
             pacman.bouger(terrain);
+
+            // Vérification de la victoire
+
             if (terrain.getGommes().isEmpty()) {
                 rafraichir();
                 arreter();
-                JOptionPane.showMessageDialog(this, "Félicitations, vous avez gagné !", "Victoire", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Félicitations, vous avez gagné !", "Victoire",
+                        JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
                 return;
             }
         }
 
         // Fantome aléatoire
+
         if (aleaFantome != null) {
             aleaFantome.choisirDirectionAleatoire();
             aleaFantome.bougerAlea(terrain);
+        }
+
+        // Gestion des collisions
+        if (pacman != null && aleaFantome != null) {
+
+            // Si collisions
+            if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY() && compteurInvincibilite == 0) {
+                vies--;
+                compteurInvincibilite = 10;
+
+                // Défaites
+                if (vies <= 0) {
+                    rafraichir();
+                    arreter();
+                    JOptionPane.showMessageDialog(this, "Game Over ! Vous avez perdu.", "Défaite", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                }
+            }
         }
     }
 
