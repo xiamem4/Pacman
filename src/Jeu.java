@@ -11,6 +11,7 @@ public class Jeu extends JPanel {
     private Fantome aleaFantome;
     private boolean enCours;
     private int vies = 3;
+    private int score = 0;
     private int compteurInvincibilite = 0;
     private Interface hudPanel;
     private int departX;
@@ -83,12 +84,17 @@ public class Jeu extends JPanel {
         }
 
         // Pacman
-
         if (pacman != null) {
+
             pacman.bouger(terrain);
 
-            // Vérification de la victoire
+            // Vérification si une gomme est mangée à la nouvelle position
+            if (terrain.mangerGomme(pacman.getX(), pacman.getY())) { 
+                score += 10;
+                hudPanel.updateScore(score);
+            }
 
+            // Vérification de la victoire
             if (terrain.getGommes().isEmpty()) {
                 rafraichir();
                 arreter();

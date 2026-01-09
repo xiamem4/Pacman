@@ -83,7 +83,7 @@ public class Terrain {
         return grille[0].length;
     }
 
-    public void mangerGomme(int x, int y) {
+    public boolean mangerGomme(int x, int y) {
         // On utilise un itérateur pour supprimer proprement l'élément de la liste
         Iterator<PacGomme> it = pacgommes.iterator();
         while (it.hasNext()) {
@@ -91,9 +91,10 @@ public class Terrain {
             if (g.getX() == x && g.getY() == y) {
                 it.remove(); // On supprime la gomme de la liste
                 grille[y][x] = ' '; // On met à jour la grille aussi (optionnel mais conseillé)
-                break; // On a trouvé, on arrête de chercher
+                return true; // On a trouvé, on arrête de chercher
             }
         }
+        return false;
     }
 
     // Vérifier si il y a un mur

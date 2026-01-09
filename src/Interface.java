@@ -4,6 +4,7 @@ import java.awt.*;
 public class Interface extends JFrame {
     private Jeu jeuPanel;
     private JLabel vieLabel;
+    private JLabel scoreLabel;
 
     public Interface(int niveauChoisi) {
         setTitle("Pacman");
@@ -12,8 +13,15 @@ public class Interface extends JFrame {
 
         // Le HUD
         JPanel hudPanel = new JPanel();
+        hudPanel.setLayout(new BorderLayout());
+        hudPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+
         vieLabel = new JLabel("Vies : 3");
-        hudPanel.add(vieLabel);
+        hudPanel.add(vieLabel, BorderLayout.EAST);
+
+        scoreLabel = new JLabel("Score : 0");
+        hudPanel.add(scoreLabel, BorderLayout.WEST);
+
         add(hudPanel, BorderLayout.NORTH);
 
         // Le jeu
@@ -34,6 +42,10 @@ public class Interface extends JFrame {
 
     public void updateVie(int v) {
         vieLabel.setText("Vies : " + v);
+    }
+
+    public void updateScore (int s) {
+        scoreLabel.setText("Score : " + s);
     }
 
     public Jeu getJeu() {

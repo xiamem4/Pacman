@@ -17,7 +17,6 @@ public class Pacman extends EntiteMouvante{
             this.x = futurX;
             this.y = futurY;
 
-            terrain.mangerGomme(this.x, this.y);
         }
     }
 
