@@ -99,7 +99,7 @@ public class Jeu extends JPanel {
             if (gommeMangee != null) { 
                 if (gommeMangee instanceof SuperPacGomme) {
                     score += 50;
-                    compteurInvincibilite = 50;
+                    compteurSuper = 50;
                 } else {
                     score +=10;
                 }
@@ -133,6 +133,8 @@ public class Jeu extends JPanel {
                     score += 250;
                     hudPanel.updateScore(score);
                     
+                    ajouterFantomeAleatoire();
+                    zoneDeJeu.setAleaFantome(aleaFantome);
                 } else {
                     perdreVie();
                     compteurInvincibilite = 10;
