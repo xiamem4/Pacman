@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.*;
 
 public class Acceuil extends JFrame {
     public Acceuil() {
@@ -20,17 +21,25 @@ public class Acceuil extends JFrame {
         JPanel panelNiveaux = new JPanel();
         panelNiveaux.setLayout(new GridLayout(0, 3, 10, 10)); 
         panelNiveaux.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        int nombreDeNiveaux = 12;
 
-        for (int i = 1; i < nombreDeNiveaux; i++) {
-            final int indexNiveau = i; // Variable finale pour l'action
-            JButton btn = new JButton("Niveau " + i);
-            
-            btn.addActionListener((ActionEvent e) -> {
-                lancerJeu(indexNiveau);
-            });
-            
-            panelNiveaux.add(btn);
+        // Dynamisation du nombre de niveaux
+        File dossierNiveaux = new File("niveaux");
+        File[] fichiers = dossierNiveaux.listFiles((dir, name) -> name.startsWith("niveau") && name.endsWith(".txt"));
+
+        if(fichiers != null && fichiers.length > 0) {
+            for (int i = 1; i <= fichiers.length; i ++) {
+                final int indexNiveau = i;
+                JButton btn = new JButton("Niveau " + i);
+
+                btn.setPreferredSize(new Dimension(100, 50));
+                btn.addActionListener((ActionEvent e)-> {
+                    lancerJeu(indexNiveau);
+                });
+
+                panelNiveaux.add(btn);
+            }
+        } else  {
+            panelNiveaux.add(new JLabel("Aucun niveau trouvé"));
         }
 
         add(new JScrollPane(panelNiveaux), BorderLayout.CENTER);
