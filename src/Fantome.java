@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.util.*;
 
-public class Fantome extends EntiteMouvante{
+public class Fantome extends EntiteMouvante {
     private Random rand = new Random();
 
-    public Fantome( int x, int y) {
+    public Fantome(int x, int y) {
         super(x, y);
     }
 
@@ -14,17 +14,23 @@ public class Fantome extends EntiteMouvante{
         this.setDirection(direction);
     }
 
-    /** Déplacement aléatoire du fantôme
+    /**
+     * Déplacement aléatoire du fantôme
+     * 
      * @param terrain : labyrinthe du niveau
      */
     public void bougerAlea(Terrain terrain) {
-        
+
         ArrayList<Integer> directionsPossibles = new ArrayList<>();
-        
-        if (!terrain.estMur(x, y - 1)) directionsPossibles.add(0);
-        if (!terrain.estMur(x, y + 1)) directionsPossibles.add(1);
-        if (!terrain.estMur(x - 1, y)) directionsPossibles.add(2);
-        if (!terrain.estMur(x + 1, y)) directionsPossibles.add(3);
+
+        if (!terrain.estMur(x, y - 1))
+            directionsPossibles.add(0);
+        if (!terrain.estMur(x, y + 1))
+            directionsPossibles.add(1);
+        if (!terrain.estMur(x - 1, y))
+            directionsPossibles.add(2);
+        if (!terrain.estMur(x + 1, y))
+            directionsPossibles.add(3);
 
         boolean estBloqueDevant = terrain.estMur(x + dx, y + dy);
         boolean estIntersection = directionsPossibles.size() > 2;
@@ -33,11 +39,9 @@ public class Fantome extends EntiteMouvante{
             int index = rand.nextInt(directionsPossibles.size());
             int nouvelleDir = directionsPossibles.get(index);
             setDirection(nouvelleDir);
-            if (estBloqueDevant)
-            System.out.println("Changement de direction");
         }
-        
-        super.bouger(terrain); 
+
+        super.bouger(terrain);
     }
 
     // Dessiner le Fantome
@@ -45,5 +49,11 @@ public class Fantome extends EntiteMouvante{
         g.setColor(Color.GREEN);
         g.fillOval(x * tailleCase, y * tailleCase, tailleCase, tailleCase);
     }
-    
+
+    // Dessiner le fantome vulnérable
+    public void dessiner(Graphics g, int tailleCase, Color couleur) {
+        g.setColor(couleur);
+        g.fillOval(x * tailleCase, y * tailleCase, tailleCase, tailleCase);
+    }
+
 }

@@ -5,7 +5,7 @@ public class ZoneDeJeu extends JPanel {
 
     private Pacman pacman;
     private Fantome aleaFantome;
-
+    private boolean fantomesVulnerables = false;
     private Terrain terrain;
     private final int TAILLE_CASE = 20;
 
@@ -32,6 +32,11 @@ public class ZoneDeJeu extends JPanel {
     // Setter aleaFantome
     public void setAleaFantome(Fantome aleaFantome) {
         this.aleaFantome = aleaFantome;
+    }
+
+    // Setter fantome vulnérable
+    public void setFantomesVulnerables(boolean v) {
+        this.fantomesVulnerables = v;
     }
 
     // Affiche la grille
@@ -92,7 +97,11 @@ public class ZoneDeJeu extends JPanel {
         }
 
         if (aleaFantome != null) {
-            aleaFantome.dessiner(g, TAILLE_CASE);
+            if (fantomesVulnerables) {
+                aleaFantome.dessiner(g, TAILLE_CASE, Color.BLUE);
+            } else {
+                aleaFantome.dessiner(g, TAILLE_CASE);
+            }
         }
     }
 }

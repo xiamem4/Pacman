@@ -16,6 +16,7 @@ public class Jeu extends JPanel {
     private Interface hudPanel;
     private int departX;
     private int departY;
+    private int compteurSuper = 0;
 
     /** Initialise le jeu
      * @param hudPanel : l'interface
@@ -81,6 +82,13 @@ public class Jeu extends JPanel {
             compteurInvincibilite--;
         }
 
+        // Gestion du temps de Super Mode
+        if (compteurSuper > 0) {
+            compteurSuper--;
+        }
+
+        zoneDeJeu.setFantomesVulnerables(compteurSuper > 0);
+
         // Pacman
         if (pacman != null) {
 
@@ -91,6 +99,7 @@ public class Jeu extends JPanel {
             if (gommeMangee != null) { 
                 if (gommeMangee instanceof SuperPacGomme) {
                     score += 50;
+                    compteurInvincibilite = 50;
                 } else {
                     score +=10;
                 }
@@ -119,8 +128,16 @@ public class Jeu extends JPanel {
         if (pacman != null && aleaFantome != null) {
 
             if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY() && compteurInvincibilite == 0) {
-                perdreVie();
-                compteurInvincibilite = 10;
+
+                if (compteurSuper > 0 ){ // Si Super Mode
+                    score += 250;
+                    hudPanel.updateScore(score);
+                    
+                } else {
+                    perdreVie();
+                    compteurInvincibilite = 10;
+                }
+                
             }
         }
     }
