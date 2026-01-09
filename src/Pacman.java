@@ -3,6 +3,10 @@ import java.awt.*;
 
 public class Pacman extends EntiteMouvante{
 
+    /** Intialisation du Pacman
+     * @param x
+     * @param y
+     */
     public Pacman( int x, int y) {
         super(x, y);
     }

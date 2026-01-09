@@ -8,12 +8,15 @@ public class Fantome extends EntiteMouvante{
         super(x, y);
     }
 
+    // Choisit une direction aléatoire
     public void choisirDirectionAleatoire() {
-        // Choisit une direction entre 0 et 3
         int direction = rand.nextInt(4);
         this.setDirection(direction);
     }
 
+    /** Déplacement aléatoire du fantôme
+     * @param terrain : labyrinthe du niveau
+     */
     public void bougerAlea(Terrain terrain) {
         
         ArrayList<Integer> directionsPossibles = new ArrayList<>();

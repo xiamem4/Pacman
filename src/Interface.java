@@ -6,6 +6,9 @@ public class Interface extends JFrame {
     private JLabel vieLabel;
     private JLabel scoreLabel;
 
+    /** Initialise l'interface
+     * @param niveauChoisi : labyrinthe du niveau
+     */
     public Interface(int niveauChoisi) {
         setTitle("Pacman");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,10 +43,12 @@ public class Interface extends JFrame {
         thread.start();
     }
 
+    // MaJ du nombre de vie
     public void updateVie(int v) {
         vieLabel.setText("Vies : " + v);
     }
 
+    // MaJ du score
     public void updateScore (int s) {
         scoreLabel.setText("Score : " + s);
     }

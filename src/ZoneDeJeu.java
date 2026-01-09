@@ -9,10 +9,8 @@ public class ZoneDeJeu extends JPanel {
     private Terrain terrain;
     private final int TAILLE_CASE = 20;
 
-    /**
-     * Constructeur de la zone de jeu
-     * 
-     * @param p       : Pacman
+    /** Constructeur de la zone de jeu
+     * @param p : Pacman
      * @param terrain : paterne du terrain
      */
     public ZoneDeJeu(Terrain terrain, Pacman p, Fantome aF) {
@@ -26,19 +24,17 @@ public class ZoneDeJeu extends JPanel {
         setBackground(Color.BLACK);
     }
 
-    // Setter du Pacman
+    // Setter Pacman
     public void setPacman(Pacman pacman) {
         this.pacman = pacman;
     }
 
-    // Setter du aleaFantome
+    // Setter aleaFantome
     public void setAleaFantome(Fantome aleaFantome) {
         this.aleaFantome = aleaFantome;
     }
 
-    /**
-     * Affiche la grille
-     */
+    // Affiche la grille
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -53,12 +49,12 @@ public class ZoneDeJeu extends JPanel {
 
                 switch (grille[ligne][colonne]) {
 
-                    case 'M':
+                    case 'M': // Mur
                         g.setColor(Color.BLUE);
                         g.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
 
-                    case '.':
+                    case '.': // PacGomme
                         g.setColor(Color.WHITE);
                         g.fillOval(
                                 x + 8,
@@ -67,11 +63,12 @@ public class ZoneDeJeu extends JPanel {
                                 4);
                         break;
 
-                    case 'P':
+                    case 'P': // Pacman
                         g.setColor(Color.YELLOW);
                         g.fillOval(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
-                    case 'v':
+
+                    case 'V': // Zone des fantomes
                         g.setColor(Color.GRAY);
                         g.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
@@ -81,11 +78,11 @@ public class ZoneDeJeu extends JPanel {
 
         g.setColor(Color.WHITE);
         for (PacGomme gomme : terrain.getGommes()) {
-            g.fillOval(
-                    gomme.getX() * TAILLE_CASE + 8, // +8 pour centrer
-                    gomme.getY() * TAILLE_CASE + 8,
-                    4,
-                    4);
+            if (gomme instanceof SuperPacGomme) {
+                g.fillOval(gomme.getX() * TAILLE_CASE + 4, gomme.getY() * TAILLE_CASE + 4, 12, 12);
+            } else {
+                g.fillOval(gomme.getX() * TAILLE_CASE + 8, gomme.getY() * TAILLE_CASE + 8, 4, 4);
+            }
         }
 
         if (pacman != null) {

@@ -14,10 +14,8 @@ public class Terrain {
         pacgommes = new ArrayList<>();
     }
 
-    /**
-     * Charge le niveau depuis un fichier texte
-     * 
-     * @param numeroNiveau : Le numéro du niveau (ex: 1 pour niveau1.txt)
+    /** Charge le niveau depuis un fichier texte
+     * @param numeroNiveau : numéro du niveau
      */
 
     public void chargerNiveau(int numeroNiveau) {
@@ -39,25 +37,24 @@ public class Terrain {
             lignes.add("MMMMM");
         }
 
-        // Conversion de la liste de lignes en tableau 2D (grille)
         int nbLignes = lignes.size();
-        int nbColonnes = lignes.get(0).length(); // On suppose que la 1ère ligne donne la largeur
+        int nbColonnes = lignes.get(0).length();
 
         grille = new char[nbLignes][nbColonnes];
         pacgommes.clear();
         for (int y = 0; y < nbLignes; y++) {
             String ligneActuelle = lignes.get(y);
-            // Sécurité : on prend le minimum entre la taille de la ligne et la largeur
-            // prévue
+            
             int largeurLigne = Math.min(ligneActuelle.length(), nbColonnes);
 
             for (int x = 0; x < largeurLigne; x++) {
                 char c = ligneActuelle.charAt(x);
                 grille[y][x] = c;
 
-                // Création des gommes
                 if (c == '.') {
                     pacgommes.add(new PacGomme(x, y));
+                } else if(c == 'S'){
+                    pacgommes.add(new SuperPacGomme(x, y));
                 }
             }
         }
@@ -83,18 +80,18 @@ public class Terrain {
         return grille[0].length;
     }
 
-    public boolean mangerGomme(int x, int y) {
-        // On utilise un itérateur pour supprimer proprement l'élément de la liste
+    // Gestion des PacGommes / SuperPacGommes
+    public PacGomme mangerGomme(int x, int y) {
         Iterator<PacGomme> it = pacgommes.iterator();
         while (it.hasNext()) {
             PacGomme g = it.next();
             if (g.getX() == x && g.getY() == y) {
-                it.remove(); // On supprime la gomme de la liste
-                grille[y][x] = ' '; // On met à jour la grille aussi (optionnel mais conseillé)
-                return true; // On a trouvé, on arrête de chercher
+                it.remove();
+                grille[y][x] = ' ';
+                return g;
             }
         }
-        return false;
+        return null;
     }
 
     // Vérifier si il y a un mur

@@ -1,9 +1,9 @@
 MMMMMMMMMMMMMMMMMMMMM
-M.........M.........M
+M....S....M....S....M
 M.MM.MMMM.M.MMMM.MM.M
 M.......M.M.M.....M.M
 M.MMMMM.M.M.M.MMMMM.M
-M.M.....M.M.M.....M.M
+M.M.....M...M.....M.M
 M.M.MMVMMMMMMMVMM.M.M
 M.M..MVVVVVVVVVM..M.M
 M.MM.MVVVVVVVVVM.MM.M
@@ -14,7 +14,7 @@ MM.................MM
 MM.M.MM.MMMMM.MM.M.MM
 MM.M......P......M.MM
 MM.M.MMMM.M.MMMM.M.MM
-M..M......M......M..M
+MS.M......M......M.SM
 M.MM.MMMM.M.MMMM.MM.M
 M.........M.........M
 MMMMMMMMMMMMMMMMMMMMM

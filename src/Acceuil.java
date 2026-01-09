@@ -47,10 +47,9 @@ public class Acceuil extends JFrame {
     }
 
     private void lancerJeu(int indexNiveau) {
-        // On ferme l'accueil
         this.dispose();
 
-        // On lance l'interface principale en lui passant le niveau choisi
+        // On lance l'interface principale en passant le niveau choisi
         SwingUtilities.invokeLater(() -> {
             new Interface(indexNiveau);
         });

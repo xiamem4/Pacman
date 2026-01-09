@@ -17,10 +17,10 @@ public class Jeu extends JPanel {
     private int departX;
     private int departY;
 
-    /**
-     * Initialise le jeu :
+    /** Initialise le jeu
+     * @param hudPanel : l'interface
+     * @param niveau : labyrinthe du niveau
      */
-
     public Jeu(Interface hudPanel, int niveau) {
 
         this.hudPanel = hudPanel;
@@ -58,24 +58,22 @@ public class Jeu extends JPanel {
         });
     }
 
-    // Dans votre classe Jeu
+    // Ajout du fantôme aléatoire
     public void ajouterFantomeAleatoire() {
         Random rand = new Random();
         int x, y;
         int[] posPac = terrain.getPositionPacman();
 
         do {
-            // Génère un nombre entre 0 et le max de colonnes/lignes
             x = rand.nextInt(terrain.getNbColonnes());
             y = rand.nextInt(terrain.getNbLignes());
 
-            // On recommence si c'est un mur ou la position du Pacman
         } while (terrain.estMur(x, y) || (x == posPac[0] && y == posPac[1]));
 
         this.aleaFantome = new Fantome(x, y);
     }
 
-    // Calculer la MAJ des déplacements, la victoire ET la défaite
+    // Cyle du jeu
     public void mettreAJour() {
 
         // Gestion du temps d'invincibilité
@@ -89,8 +87,13 @@ public class Jeu extends JPanel {
             pacman.bouger(terrain);
 
             // Vérification si une gomme est mangée à la nouvelle position
-            if (terrain.mangerGomme(pacman.getX(), pacman.getY())) { 
-                score += 10;
+            PacGomme gommeMangee = terrain.mangerGomme(pacman.getX(), pacman.getY());
+            if (gommeMangee != null) { 
+                if (gommeMangee instanceof SuperPacGomme) {
+                    score += 50;
+                } else {
+                    score +=10;
+                }
                 hudPanel.updateScore(score);
             }
 
@@ -115,7 +118,6 @@ public class Jeu extends JPanel {
         // Gestion des collisions
         if (pacman != null && aleaFantome != null) {
 
-            // Si collisions
             if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY() && compteurInvincibilite == 0) {
                 perdreVie();
                 compteurInvincibilite = 10;
@@ -123,6 +125,7 @@ public class Jeu extends JPanel {
         }
     }
 
+    // Action de perdre une vie
     public void perdreVie() {
         vies--;
         hudPanel.updateVie(vies);

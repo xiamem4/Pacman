@@ -46,12 +46,14 @@ public class EntiteMouvante {
         }
     }
 
-    // Dans EntiteMouvante.java
+    /** Méthode de déplacement 
+     * @param terrain : labyrinthe du niveau
+     */
     public void bouger(Terrain terrain) {
         int futurX = x + dx;
         int futurY = y + dy;
 
-        // Le fantôme vérifie juste s'il y a un mur
+        // Vérifier si mur
         if (!terrain.estMur(futurX, futurY)) {
             this.x = futurX;
             this.y = futurY;
