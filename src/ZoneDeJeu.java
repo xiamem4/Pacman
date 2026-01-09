@@ -79,8 +79,10 @@ public class ZoneDeJeu extends JPanel {
         g.setColor(Color.WHITE);
         for (PacGomme gomme : terrain.getGommes()) {
             if (gomme instanceof SuperPacGomme) {
+                g.setColor(Color.GREEN);
                 g.fillOval(gomme.getX() * TAILLE_CASE + 4, gomme.getY() * TAILLE_CASE + 4, 12, 12);
             } else {
+                g.setColor(Color.YELLOW);
                 g.fillOval(gomme.getX() * TAILLE_CASE + 8, gomme.getY() * TAILLE_CASE + 8, 4, 4);
             }
         }
