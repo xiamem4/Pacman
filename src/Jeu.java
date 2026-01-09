@@ -20,12 +20,13 @@ public class Jeu extends JPanel {
      * Initialise le jeu :
      */
 
-    public Jeu(Interface hudPanel) {
+    public Jeu(Interface hudPanel, int niveau) {
 
         this.hudPanel = hudPanel;
 
         setLayout(new BorderLayout());
         terrain = new Terrain();
+        terrain.chargerNiveau(niveau);
         zoneDeJeu = new ZoneDeJeu(terrain, pacman, aleaFantome);
         enCours = true;
 

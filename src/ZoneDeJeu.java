@@ -71,6 +71,10 @@ public class ZoneDeJeu extends JPanel {
                         g.setColor(Color.YELLOW);
                         g.fillOval(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
+                    case 'v':
+                        g.setColor(Color.GRAY);
+                        g.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
+                        break;
                 }
             }
         }

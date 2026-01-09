@@ -1,3 +1,4 @@
+Impossiblité de tourner vers un mur
 Système de points
 Timer
 Système de vie
@@ -11,14 +12,5 @@ Création de 13 terrains et système de sélection
 Système de sauvegarde de score
 Génération des terrain ?
 
-"MMMMMMMMMM",
-"M........M",
-"M.MMMMMM.M",
-"M........M",
-"M.MMM.MM.M",
-"M.MMM.MM.M",
-"M....P...M",
-"M.MMM.MM.M",
-"M........M",
-"MMMMMMMMMM"
+
 

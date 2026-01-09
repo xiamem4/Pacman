@@ -5,7 +5,7 @@ public class Interface extends JFrame {
     private Jeu jeuPanel;
     private JLabel vieLabel;
 
-    public Interface() {
+    public Interface(int niveauChoisi) {
         setTitle("Pacman");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -17,7 +17,7 @@ public class Interface extends JFrame {
         add(hudPanel, BorderLayout.NORTH);
 
         // Le jeu
-        jeuPanel = new Jeu(this);
+        jeuPanel = new Jeu(this, niveauChoisi);
         add(jeuPanel, BorderLayout.CENTER);
 
         setResizable(false);
@@ -26,6 +26,10 @@ public class Interface extends JFrame {
         setVisible(true);
 
         jeuPanel.requestFocusInWindow();
+
+        Processus processus = new Processus(jeuPanel);
+        Thread thread = new Thread(processus);
+        thread.start();
     }
 
     public void updateVie(int v) {
@@ -36,13 +40,4 @@ public class Interface extends JFrame {
         return this.jeuPanel;
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Interface fenetre = new Interface();
-            Jeu jeu = fenetre.getJeu();
-            Processus processus = new Processus(jeu);
-            Thread thread = new Thread(processus);
-            thread.start();
-        });
-    }
 }

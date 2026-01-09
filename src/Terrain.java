@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Terrain {
 
@@ -8,27 +12,52 @@ public class Terrain {
 
     public Terrain() {
         pacgommes = new ArrayList<>();
+    }
 
-        String[] laby = {
-                "MMMMMMMMMM",
-                "M........M",
-                "M.MMMMMM.M",
-                "M........M",
-                "M.MMM.MM.M",
-                "M.MMM.MM.M",
-                "M....P...M",
-                "M.MMM.MM.M",
-                "M........M",
-                "MMMMMMMMMM"
-        };
+    /**
+     * Charge le niveau depuis un fichier texte
+     * 
+     * @param numeroNiveau : Le numéro du niveau (ex: 1 pour niveau1.txt)
+     */
 
-        grille = new char[laby.length][laby[0].length()];
+    public void chargerNiveau(int numeroNiveau) {
+        String nomFichier = "niveaux/niveau" + numeroNiveau + ".txt";
+        List<String> lignes = new ArrayList<>();
 
-        for (int ligne = 0; ligne < laby.length; ligne++) {
-            grille[ligne] = laby[ligne].toCharArray();
-            for (int col = 0; col < grille[ligne].length; col++) {
-                if (grille[ligne][col] == '.') {
-                    pacgommes.add(new PacGomme(col, ligne));
+        // Lecture du fichier
+        try (BufferedReader br = new BufferedReader(new FileReader(nomFichier))) {
+            String ligne;
+            while ((ligne = br.readLine()) != null) {
+                lignes.add(ligne);
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement du niveau " + numeroNiveau);
+            e.printStackTrace();
+            // Chargement d'un niveau de secours en cas d'erreur pour éviter le crash
+            lignes.add("MMMMM");
+            lignes.add("M.P.M");
+            lignes.add("MMMMM");
+        }
+
+        // Conversion de la liste de lignes en tableau 2D (grille)
+        int nbLignes = lignes.size();
+        int nbColonnes = lignes.get(0).length(); // On suppose que la 1ère ligne donne la largeur
+
+        grille = new char[nbLignes][nbColonnes];
+        pacgommes.clear();
+        for (int y = 0; y < nbLignes; y++) {
+            String ligneActuelle = lignes.get(y);
+            // Sécurité : on prend le minimum entre la taille de la ligne et la largeur
+            // prévue
+            int largeurLigne = Math.min(ligneActuelle.length(), nbColonnes);
+
+            for (int x = 0; x < largeurLigne; x++) {
+                char c = ligneActuelle.charAt(x);
+                grille[y][x] = c;
+
+                // Création des gommes
+                if (c == '.') {
+                    pacgommes.add(new PacGomme(x, y));
                 }
             }
         }
@@ -72,7 +101,7 @@ public class Terrain {
         if (x < 0 || x >= getNbColonnes() || y < 0 || y >= getNbLignes()) {
             return true;
         }
-        return grille[y][x] == 'M';
+        return grille[y][x] == 'M' || grille[y][x] == 'V';
     }
 
     // Mettre à jour l'emplacement du Pacman
