@@ -1,22 +1,25 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class ZoneDeJeu extends JPanel {
 
     private Pacman pacman;
-    private Fantome aleaFantome;
+    private List<Fantome> fantomes;
     private boolean fantomesVulnerables = false;
     private Terrain terrain;
     private final int TAILLE_CASE = 20;
 
-    /** Constructeur de la zone de jeu
-     * @param p : Pacman
+    /**
+     * Constructeur de la zone de jeu
+     * 
+     * @param p       : Pacman
      * @param terrain : paterne du terrain
      */
-    public ZoneDeJeu(Terrain terrain, Pacman p, Fantome aF) {
+    public ZoneDeJeu(Terrain terrain, Pacman p, List<Fantome> fantomes) {
         this.terrain = terrain;
         this.pacman = p;
-        this.aleaFantome = aF;
+        this.fantomes = fantomes;
 
         setPreferredSize(new Dimension(
                 terrain.getNbColonnes() * TAILLE_CASE,
@@ -30,8 +33,9 @@ public class ZoneDeJeu extends JPanel {
     }
 
     // Setter aleaFantome
-    public void setAleaFantome(Fantome aleaFantome) {
-        this.aleaFantome = aleaFantome;
+
+    public void setFantomes(List<Fantome> fantomes) {
+        this.fantomes = fantomes;
     }
 
     // Setter fantome vulnérable
@@ -73,8 +77,8 @@ public class ZoneDeJeu extends JPanel {
                         g.fillOval(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
 
-                    case 'V': // Zone des fantomes
-                        g.setColor(Color.GRAY);
+                    case 'F': // Zone des fantomes
+                        g.setColor(Color.BLACK);
                         g.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
                 }
@@ -84,7 +88,7 @@ public class ZoneDeJeu extends JPanel {
         g.setColor(Color.WHITE);
         for (PacGomme gomme : terrain.getGommes()) {
             if (gomme instanceof SuperPacGomme) {
-                g.setColor(Color.GREEN);
+                g.setColor(Color.ORANGE);
                 g.fillOval(gomme.getX() * TAILLE_CASE + 4, gomme.getY() * TAILLE_CASE + 4, 12, 12);
             } else {
                 g.setColor(Color.YELLOW);
@@ -96,12 +100,15 @@ public class ZoneDeJeu extends JPanel {
             pacman.dessiner(g, TAILLE_CASE);
         }
 
-        if (aleaFantome != null) {
-            if (fantomesVulnerables) {
-                aleaFantome.dessiner(g, TAILLE_CASE, Color.BLUE);
-            } else {
-                aleaFantome.dessiner(g, TAILLE_CASE);
+        if (fantomes != null) {
+            for (Fantome f : fantomes) {
+                if (fantomesVulnerables) {
+                    f.dessiner(g, TAILLE_CASE, Color.BLUE);
+                } else {
+                    f.dessiner(g, TAILLE_CASE);
+                }
             }
+
         }
     }
 }

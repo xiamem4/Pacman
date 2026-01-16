@@ -99,7 +99,7 @@ public class Terrain {
         if (x < 0 || x >= getNbColonnes() || y < 0 || y >= getNbLignes()) {
             return true;
         }
-        return grille[y][x] == 'M' || grille[y][x] == 'V';
+        return grille[y][x] == 'M';
     }
 
     // Mettre à jour l'emplacement du Pacman

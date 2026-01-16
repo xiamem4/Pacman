@@ -2,12 +2,15 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
 
 public class Jeu extends JPanel {
 
     private Terrain terrain;
     private ZoneDeJeu zoneDeJeu;
     private Pacman pacman;
+    private List<Fantome> fantomes = new ArrayList<Fantome>();
     private Fantome aleaFantome;
     private boolean enCours;
     private int vies = 3;
@@ -18,9 +21,11 @@ public class Jeu extends JPanel {
     private int departY;
     private int compteurSuper = 0;
 
-    /** Initialise le jeu
+    /**
+     * Initialise le jeu
+     * 
      * @param hudPanel : l'interface
-     * @param niveau : labyrinthe du niveau
+     * @param niveau   : labyrinthe du niveau
      */
     public Jeu(Interface hudPanel, int niveau) {
 
@@ -29,7 +34,7 @@ public class Jeu extends JPanel {
         setLayout(new BorderLayout());
         terrain = new Terrain();
         terrain.chargerNiveau(niveau);
-        zoneDeJeu = new ZoneDeJeu(terrain, pacman, aleaFantome);
+        zoneDeJeu = new ZoneDeJeu(terrain, pacman, fantomes);
         enCours = true;
 
         int[] pos = terrain.getPositionPacman();
@@ -38,8 +43,10 @@ public class Jeu extends JPanel {
 
         pacman = new Pacman(departX, departY);
         zoneDeJeu.setPacman(pacman);
-        ajouterFantomeAleatoire();
-        zoneDeJeu.setAleaFantome(aleaFantome);
+        for (int i = 0; i < 4; i++) {
+            ajouterFantomeAleatoire();
+        }
+        zoneDeJeu.setFantomes(fantomes);
 
         setFocusable(true);
         add(zoneDeJeu);
@@ -62,16 +69,31 @@ public class Jeu extends JPanel {
     // Ajout du fantôme aléatoire
     public void ajouterFantomeAleatoire() {
         Random rand = new Random();
-        int x, y;
-        int[] posPac = terrain.getPositionPacman();
+        ArrayList<int[]> positionsF = new ArrayList<>();
+        char[][] grille = terrain.getGrille();
 
-        do {
-            x = rand.nextInt(terrain.getNbColonnes());
-            y = rand.nextInt(terrain.getNbLignes());
+        // Parcour de la grille
+        for (int y = 0; y < grille.length; y++) {
+            for (int x = 0; x < grille[0].length; x++) {
+                if (grille[y][x] == 'F') {
+                    positionsF.add(new int[] { x, y });
+                }
+            }
+        }
 
-        } while (terrain.estMur(x, y) || (x == posPac[0] && y == posPac[1]));
+        if (!positionsF.isEmpty()) {
+            int[] posChoisie = positionsF.get(rand.nextInt(positionsF.size()));
+            this.fantomes.add(new Fantome(posChoisie[0], posChoisie[1]));
+        } else {
+            int x, y;
+            int[] posPac = terrain.getPositionPacman();
+            do {
+                x = rand.nextInt(terrain.getNbColonnes());
+                y = rand.nextInt(terrain.getNbLignes());
+            } while (terrain.estMur(x, y) || (x == posPac[0] && y == posPac[1]));
 
-        this.aleaFantome = new Fantome(x, y);
+            this.fantomes.add(new Fantome(x, y));
+        }
     }
 
     // Cyle du jeu
@@ -91,55 +113,48 @@ public class Jeu extends JPanel {
 
         // Pacman
         if (pacman != null) {
-
-            pacman.bouger(terrain);
-
-            // Vérification si une gomme est mangée à la nouvelle position
-            PacGomme gommeMangee = terrain.mangerGomme(pacman.getX(), pacman.getY());
-            if (gommeMangee != null) { 
-                if (gommeMangee instanceof SuperPacGomme) {
-                    score += 50;
-                    compteurSuper = 50;
-                } else {
-                    score +=10;
+            for (int i = 0; i < fantomes.size(); i++) {
+                Fantome f = fantomes.get(i);
+                if (pacman.getX() == f.getX() && pacman.getY() == f.getY() && compteurInvincibilite == 0) {
+                    if (compteurSuper > 0) {
+                        score += 250;
+                        hudPanel.updateScore(score);
+                        fantomes.remove(i);
+                        ajouterFantomeAleatoire();
+                        i--;
+                    } else {
+                        perdreVie();
+                        compteurInvincibilite = 10;
+                        break;
+                    }
                 }
-                hudPanel.updateScore(score);
-            }
-
-            // Vérification de la victoire
-            if (terrain.getGommes().isEmpty()) {
-                rafraichir();
-                arreter();
-                JOptionPane.showMessageDialog(this, "Félicitations, vous avez gagné !", "Victoire",
-                        JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
-                return;
             }
         }
 
         // Fantome aléatoire
 
-        if (aleaFantome != null) {
-            aleaFantome.choisirDirectionAleatoire();
-            aleaFantome.bougerAlea(terrain);
+        for (Fantome fantome : fantomes) {
+            fantome.choisirDirectionAleatoire();
+            fantome.bougerAlea(terrain);
         }
 
         // Gestion des collisions
         if (pacman != null && aleaFantome != null) {
 
-            if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY() && compteurInvincibilite == 0) {
+            if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY()
+                    && compteurInvincibilite == 0) {
 
-                if (compteurSuper > 0 ){ // Si Super Mode
+                if (compteurSuper > 0) { // Si Super Mode
                     score += 250;
                     hudPanel.updateScore(score);
-                    
+
                     ajouterFantomeAleatoire();
-                    zoneDeJeu.setAleaFantome(aleaFantome);
+                    zoneDeJeu.setFantomes(fantomes);
                 } else {
                     perdreVie();
                     compteurInvincibilite = 10;
                 }
-                
+
             }
         }
     }
