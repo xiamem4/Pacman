@@ -161,7 +161,7 @@ public class Jeu extends JPanel {
             // Sortie des fantômes
             if (!fantomesEnAttente.isEmpty()) {
                 compteurSortieFantome++;
-                if (compteurSortieFantome >= 45) {
+                if (this.fantomes.isEmpty() || compteurSortieFantome >= 30) {
                     Fantome f = fantomesEnAttente.remove(0);
                     f.setX(positionPorte[0]);
                     f.setY(positionPorte[1]);
@@ -204,10 +204,11 @@ public class Jeu extends JPanel {
                         f2.demiTour();
 
                         // On les fait reculer immédiatement d'une case pour éviter qu'ils restent bloqués l'un dans l'autre
-                        f1.setX(f1.getX() + f1.getX());
-                        f1.setY(f1.getY() + f1.getY());
-                        f2.setX(f2.getX() + f2.getX());
-                        f2.setY(f2.getY() + f2.getY());
+                        f1.setX(f1.getX() + f1.dx);
+                        f1.setY(f1.getY() + f1.dy);
+                    
+                        f2.setX(f2.getX() + f2.dx);
+                        f2.setY(f2.getY() + f2.dy);
                     }
                 }
             }

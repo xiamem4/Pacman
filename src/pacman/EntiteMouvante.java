@@ -1,4 +1,5 @@
 package pacman;
+
 public class EntiteMouvante {
     protected int x, y;
     protected int dx, dy;
@@ -53,7 +54,9 @@ public class EntiteMouvante {
         this.dy = -this.dy;
     }
 
-    /** Méthode de déplacement 
+    /**
+     * Méthode de déplacement
+     * 
      * @param terrain : labyrinthe du niveau
      */
     public void bouger(Terrain terrain) {
