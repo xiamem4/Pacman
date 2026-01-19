@@ -1,3 +1,4 @@
+package pacman;
 public class EntiteMouvante {
     protected int x, y;
     protected int dx, dy;

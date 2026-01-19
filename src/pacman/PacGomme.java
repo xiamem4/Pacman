@@ -1,3 +1,4 @@
+package pacman;
 public class PacGomme {
     private int x;
     private int y;

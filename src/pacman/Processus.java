@@ -1,3 +1,4 @@
+package pacman;
 public class Processus implements Runnable {
 
     private Jeu jeu;

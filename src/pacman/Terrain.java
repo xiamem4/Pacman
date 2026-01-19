@@ -1,3 +1,4 @@
+package pacman;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class Terrain {
                 char c = ligneActuelle.charAt(x);
                 grille[y][x] = c;
 
-                if (c == '.') {
+                if (c == '.' || c == 'D') {
                     pacgommes.add(new PacGomme(x, y));
                 } else if(c == 'S'){
                     pacgommes.add(new SuperPacGomme(x, y));

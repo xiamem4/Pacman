@@ -1,25 +1,33 @@
+package pacman;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-
 public class Jeu extends JPanel {
 
     private Terrain terrain;
     private ZoneDeJeu zoneDeJeu;
     private Pacman pacman;
-    private List<Fantome> fantomes = new ArrayList<Fantome>();
-    private Fantome aleaFantome;
-    private boolean enCours;
-    private int vies = 3;
-    private int score = 0;
-    private int compteurInvincibilite = 0;
+
+    private List<Fantome> fantomes = new ArrayList<Fantome>(); // Liste des fantômes
+    private List<Fantome> fantomesEnAttente = new ArrayList<>(); // Liste des fantômes dans la zone de départ
+    private int compteurSortieFantome = 0; // Compteur de fantomes sortis
+    private int[] positionPorte; // Position des la portes
+
+    private boolean enCours; // Définit si le jeu est en cours
+
+    private int vies = 3; // Nombre de vie
+    private int score = 0; // Nombre de point
+    private int compteurInvincibilite = 0; // Gestion du temps d'invincibilité
+
     private Interface hudPanel;
+
     private int departX;
     private int departY;
-    private int compteurSuper = 0;
+
+    private int compteurSuper = 0; // Temps sous la forme Super
 
     /**
      * Initialise le jeu
@@ -34,19 +42,22 @@ public class Jeu extends JPanel {
         setLayout(new BorderLayout());
         terrain = new Terrain();
         terrain.chargerNiveau(niveau);
-        zoneDeJeu = new ZoneDeJeu(terrain, pacman, fantomes);
-        enCours = true;
-
+        
         int[] pos = terrain.getPositionPacman();
         departX = pos[0];
         departY = pos[1];
 
         pacman = new Pacman(departX, departY);
+        this.positionPorte = trouverPorte();
+
+        zoneDeJeu = new ZoneDeJeu(terrain, pacman, fantomes);
+        enCours = true;
+
         zoneDeJeu.setPacman(pacman);
+        
         for (int i = 0; i < 4; i++) {
-            ajouterFantomeAleatoire();
+            preparerFantome();
         }
-        zoneDeJeu.setFantomes(fantomes);
 
         setFocusable(true);
         add(zoneDeJeu);
@@ -66,8 +77,21 @@ public class Jeu extends JPanel {
         });
     }
 
+    // Trouver la porte
+    private int[] trouverPorte() {
+        char[][] grille = terrain.getGrille();
+        for (int y = 0; y < grille.length; y++) {
+            for (int x = 0; x < grille[0].length; x++) {
+                if (grille[y][x] == 'D') {
+                    return new int[] { x, y };
+                }
+            }
+        }
+        return terrain.getPositionPacman();
+    }
+
     // Ajout du fantôme aléatoire
-    public void ajouterFantomeAleatoire() {
+    public void preparerFantome() {
         Random rand = new Random();
         ArrayList<int[]> positionsF = new ArrayList<>();
         char[][] grille = terrain.getGrille();
@@ -82,17 +106,8 @@ public class Jeu extends JPanel {
         }
 
         if (!positionsF.isEmpty()) {
-            int[] posChoisie = positionsF.get(rand.nextInt(positionsF.size()));
-            this.fantomes.add(new Fantome(posChoisie[0], posChoisie[1]));
-        } else {
-            int x, y;
-            int[] posPac = terrain.getPositionPacman();
-            do {
-                x = rand.nextInt(terrain.getNbColonnes());
-                y = rand.nextInt(terrain.getNbLignes());
-            } while (terrain.estMur(x, y) || (x == posPac[0] && y == posPac[1]));
-
-            this.fantomes.add(new Fantome(x, y));
+            int[] pos = positionsF.get(rand.nextInt(positionsF.size()));
+            fantomesEnAttente.add(new Fantome(pos[0], pos[1]));
         }
     }
 
@@ -113,48 +128,65 @@ public class Jeu extends JPanel {
 
         // Pacman
         if (pacman != null) {
-            for (int i = 0; i < fantomes.size(); i++) {
-                Fantome f = fantomes.get(i);
-                if (pacman.getX() == f.getX() && pacman.getY() == f.getY() && compteurInvincibilite == 0) {
-                    if (compteurSuper > 0) {
-                        score += 250;
-                        hudPanel.updateScore(score);
-                        fantomes.remove(i);
-                        ajouterFantomeAleatoire();
-                        i--;
-                    } else {
-                        perdreVie();
-                        compteurInvincibilite = 10;
-                        break;
-                    }
+
+            pacman.bouger(terrain);
+
+            // Vérification pomme mangée
+            PacGomme gommeMangee = terrain.mangerGomme(pacman.getX(), pacman.getY());
+
+            if (gommeMangee != null) {
+                if (gommeMangee instanceof SuperPacGomme) {
+                    score += 50;
+                    compteurInvincibilite = 50;
+                    compteurSuper = 50;
+                } else {
+                    score += 10;
+                }
+                hudPanel.updateScore(score);
+            }
+
+            // Vérification de la victoire
+            if (terrain.getGommes().isEmpty()) {
+                rafraichir();
+                arreter();
+                JOptionPane.showMessageDialog(this, "Félicitations, vous avez gagné !", "Victoire",
+                        JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+                return;
+            }
+
+            // Sortie des fantômes
+            if (!fantomesEnAttente.isEmpty()) {
+                compteurSortieFantome ++;
+                if (compteurSortieFantome >= 15) {
+                    Fantome f = fantomesEnAttente.remove(0);
+                    f.setX(positionPorte[0]);
+                    f.setY(positionPorte[1]);
+                    this.fantomes.add(f);
+                    compteurSortieFantome = 0;
                 }
             }
         }
 
-        // Fantome aléatoire
+        // Gestion des collisions et déplacement des fantômes
+        Iterator<Fantome> it = fantomes.iterator();
+        while (it.hasNext()) {
+            Fantome f = it.next();
+            f.choisirDirectionAleatoire();
+            f.bougerAlea(terrain);
 
-        for (Fantome fantome : fantomes) {
-            fantome.choisirDirectionAleatoire();
-            fantome.bougerAlea(terrain);
-        }
-
-        // Gestion des collisions
-        if (pacman != null && aleaFantome != null) {
-
-            if (pacman.getX() == aleaFantome.getX() && pacman.getY() == aleaFantome.getY()
-                    && compteurInvincibilite == 0) {
-
-                if (compteurSuper > 0) { // Si Super Mode
+            // Vérification collision avec Pacman
+            if (pacman != null && pacman.getX() == f.getX() && pacman.getY() == f.getY()) {
+                if (compteurSuper > 0) {
                     score += 250;
                     hudPanel.updateScore(score);
-
-                    ajouterFantomeAleatoire();
-                    zoneDeJeu.setFantomes(fantomes);
-                } else {
+                    it.remove();
+                    preparerFantome();
+                } else if (compteurInvincibilite == 0) {
                     perdreVie();
-                    compteurInvincibilite = 10;
+                    compteurInvincibilite = 20;
+                    break ;
                 }
-
             }
         }
     }
