@@ -1,4 +1,5 @@
 package pacman;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -42,7 +43,7 @@ public class Jeu extends JPanel {
         setLayout(new BorderLayout());
         terrain = new Terrain();
         terrain.chargerNiveau(niveau);
-        
+
         int[] pos = terrain.getPositionPacman();
         departX = pos[0];
         departY = pos[1];
@@ -53,8 +54,10 @@ public class Jeu extends JPanel {
         zoneDeJeu = new ZoneDeJeu(terrain, pacman, fantomes);
         enCours = true;
 
+        zoneDeJeu.setFantomesEnAttente(fantomesEnAttente);
+
         zoneDeJeu.setPacman(pacman);
-        
+
         for (int i = 0; i < 4; i++) {
             preparerFantome();
         }
@@ -157,8 +160,8 @@ public class Jeu extends JPanel {
 
             // Sortie des fantômes
             if (!fantomesEnAttente.isEmpty()) {
-                compteurSortieFantome ++;
-                if (compteurSortieFantome >= 15) {
+                compteurSortieFantome++;
+                if (compteurSortieFantome >= 45) {
                     Fantome f = fantomesEnAttente.remove(0);
                     f.setX(positionPorte[0]);
                     f.setY(positionPorte[1]);
@@ -185,7 +188,27 @@ public class Jeu extends JPanel {
                 } else if (compteurInvincibilite == 0) {
                     perdreVie();
                     compteurInvincibilite = 20;
-                    break ;
+                    break;
+                }
+            }
+
+            // Vérification collision avec un autre fantôme
+            for (int i = 0; i < fantomes.size(); i++) {
+                for (int j = i + 1; j < fantomes.size(); j++) {
+                    Fantome f1 = fantomes.get(i);
+                    Fantome f2 = fantomes.get(j);
+
+                    // Si deux fantômes sont sur la même case
+                    if (f1.getX() == f2.getX() && f1.getY() == f2.getY()) {
+                        f1.demiTour();
+                        f2.demiTour();
+
+                        // On les fait reculer immédiatement d'une case pour éviter qu'ils restent bloqués l'un dans l'autre
+                        f1.setX(f1.getX() + f1.getX());
+                        f1.setY(f1.getY() + f1.getY());
+                        f2.setX(f2.getX() + f2.getX());
+                        f2.setY(f2.getY() + f2.getY());
+                    }
                 }
             }
         }

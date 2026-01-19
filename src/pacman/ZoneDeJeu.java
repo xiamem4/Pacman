@@ -7,6 +7,7 @@ public class ZoneDeJeu extends JPanel {
 
     private Pacman pacman;
     private List<Fantome> fantomes;
+    private List<Fantome> fantomesEnAttente;
     private boolean fantomesVulnerables = false;
     private Terrain terrain;
     private final int TAILLE_CASE = 20;
@@ -33,10 +34,15 @@ public class ZoneDeJeu extends JPanel {
         this.pacman = pacman;
     }
 
-    // Setter aleaFantome
+    // Setter fantome
 
     public void setFantomes(List<Fantome> fantomes) {
         this.fantomes = fantomes;
+    }
+
+    // Setter fantome en attente
+    public void setFantomesEnAttente(List<Fantome> fEnAttente) {
+        this.fantomesEnAttente = fEnAttente;
     }
 
     // Setter fantome vulnérable
@@ -101,6 +107,8 @@ public class ZoneDeJeu extends JPanel {
             pacman.dessiner(g, TAILLE_CASE);
         }
 
+
+        // Fantomes actifs
         if (fantomes != null) {
             for (Fantome f : fantomes) {
                 if (fantomesVulnerables) {
@@ -109,7 +117,13 @@ public class ZoneDeJeu extends JPanel {
                     f.dessiner(g, TAILLE_CASE);
                 }
             }
+        }
 
+        // Fantomes en attentes
+        if (fantomesEnAttente != null) {
+            for (Fantome f : fantomesEnAttente) {
+                f.dessiner(g, TAILLE_CASE);
+            }
         }
     }
 }

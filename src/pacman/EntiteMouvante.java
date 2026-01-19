@@ -47,6 +47,12 @@ public class EntiteMouvante {
         }
     }
 
+    // Faire un demi tour
+    public void demiTour() {
+        this.dx = -this.dx;
+        this.dy = -this.dy;
+    }
+
     /** Méthode de déplacement 
      * @param terrain : labyrinthe du niveau
      */
