@@ -8,7 +8,7 @@ public class Acceuil extends JFrame {
     public Acceuil() {
         setTitle("Pacman - Sélection du niveau");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 400);
+        setSize(700, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -20,19 +20,22 @@ public class Acceuil extends JFrame {
 
         // Panneau des boutons
         JPanel panelNiveaux = new JPanel();
-        panelNiveaux.setLayout(new GridLayout(0, 3, 10, 10)); 
+        panelNiveaux.setLayout(new FlowLayout(FlowLayout.CENTER,10, 10)); 
         panelNiveaux.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Dynamisation du nombre de niveaux
         File dossierNiveaux = new File("niveaux");
         File[] fichiers = dossierNiveaux.listFiles((dir, name) -> name.startsWith("niveau") && name.endsWith(".txt"));
 
+
         if(fichiers != null && fichiers.length > 0) {
+            Dimension tailleBouton = new Dimension(110, 60);
+
             for (int i = 1; i <= fichiers.length; i ++) {
                 final int indexNiveau = i;
                 JButton btn = new JButton("Niveau " + i);
 
-                btn.setPreferredSize(new Dimension(100, 50));
+                btn.setPreferredSize(tailleBouton);
                 btn.addActionListener((ActionEvent e)-> {
                     lancerJeu(indexNiveau);
                 });
@@ -43,7 +46,13 @@ public class Acceuil extends JFrame {
             panelNiveaux.add(new JLabel("Aucun niveau trouvé"));
         }
 
-        add(new JScrollPane(panelNiveaux), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(panelNiveaux);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        panelNiveaux.setPreferredSize(new Dimension(680, 600));
+        
+        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.getViewport().addChangeListener(e -> panelNiveaux.revalidate());
         setVisible(true);
     }
 
