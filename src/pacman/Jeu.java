@@ -152,6 +152,11 @@ public class Jeu extends JPanel {
             compteurSuper--;
         }
 
+        // Ajoute d'une vie si 10000
+        if (score >= 10000) {
+            vies += 1;
+        }
+
         zoneDeJeu.setFantomesVulnerables(compteurSuper > 0);
 
         // Pacman
