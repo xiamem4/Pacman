@@ -93,11 +93,17 @@ public class Jeu extends JPanel {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                int newDirection = -1;
+
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP -> pacman.setDirection(0);
-                    case KeyEvent.VK_DOWN -> pacman.setDirection(1);
-                    case KeyEvent.VK_LEFT -> pacman.setDirection(2);
-                    case KeyEvent.VK_RIGHT -> pacman.setDirection(3);
+                    case KeyEvent.VK_UP -> newDirection = 0;
+                    case KeyEvent.VK_DOWN -> newDirection = 1;
+                    case KeyEvent.VK_LEFT -> newDirection = 2;
+                    case KeyEvent.VK_RIGHT -> newDirection = 3;
+                }
+                
+                if (newDirection != -1 && pacman.peutTourner(terrain, newDirection)) {
+                    pacman.setDirection(newDirection);
                 }
             }
         });

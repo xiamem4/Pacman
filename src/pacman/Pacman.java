@@ -25,6 +25,21 @@ public class Pacman extends EntiteMouvante{
         }
     }
 
+    // Vérifier je peux changer de direction
+    public boolean peutTourner(Terrain terrain, int direction){
+        int testDx = 0;
+        int testDy = 0;
+
+        switch (direction) {
+            case 0 -> testDy = -1; // Haut
+            case 1 -> testDy = 1; // Bas
+            case 2 -> testDx = -1; // Gauche
+            case 3 -> testDx = 1; // Droite
+        }
+
+        return !terrain.estMur(x + testDx, y +testDy);
+    }
+
     // Dessiner le Pacamn
     public void dessiner(Graphics g, int tailleCase) {
         g.setColor(Color.YELLOW);
