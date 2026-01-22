@@ -220,7 +220,6 @@ public class Jeu extends JPanel {
             int futurPX = pacman.getX() + pacman.dx;
             int futurPY = pacman.getY() + pacman.dy;
 
-            f.choisirDirectionAleatoire();
             f.bougerAlea(terrain);
 
             // Collision "swap"
@@ -248,28 +247,6 @@ public class Jeu extends JPanel {
                     perdreVie();
                     compteurInvincibilite = 20;
                     break;
-                }
-            }
-
-            // Vérification collision avec un autre fantôme
-            for (int i = 0; i < fantomes.size(); i++) {
-                for (int j = i + 1; j < fantomes.size(); j++) {
-                    Fantome f1 = fantomes.get(i);
-                    Fantome f2 = fantomes.get(j);
-
-                    // Si deux fantômes sont sur la même case
-                    if (f1.getX() == f2.getX() && f1.getY() == f2.getY()) {
-                        f1.demiTour();
-                        f2.demiTour();
-
-                        // On les fait reculer immédiatement d'une case pour éviter qu'ils restent
-                        // bloqués l'un dans l'autre
-                        f1.setX(f1.getX() + f1.dx);
-                        f1.setY(f1.getY() + f1.dy);
-
-                        f2.setX(f2.getX() + f2.dx);
-                        f2.setY(f2.getY() + f2.dy);
-                    }
                 }
             }
         }

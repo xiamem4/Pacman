@@ -1,4 +1,5 @@
 package pacman;
+
 import java.awt.*;
 import java.util.*;
 
@@ -17,7 +18,6 @@ public class Fantome extends EntiteMouvante {
 
     /**
      * Déplacement aléatoire du fantôme
-     * 
      * @param terrain : labyrinthe du niveau
      */
     public void bougerAlea(Terrain terrain) {
@@ -25,24 +25,54 @@ public class Fantome extends EntiteMouvante {
         ArrayList<Integer> directionsPossibles = new ArrayList<>();
 
         if (!terrain.estMur(x, y - 1))
-            directionsPossibles.add(0);
+            directionsPossibles.add(0); // Haut
         if (!terrain.estMur(x, y + 1))
-            directionsPossibles.add(1);
+            directionsPossibles.add(1); // Bas
         if (!terrain.estMur(x - 1, y))
-            directionsPossibles.add(2);
+            directionsPossibles.add(2); // Gauche
         if (!terrain.estMur(x + 1, y))
-            directionsPossibles.add(3);
+            directionsPossibles.add(3); // Droite
 
-        boolean estBloqueDevant = terrain.estMur(x + dx, y + dy);
-        boolean estIntersection = directionsPossibles.size() > 2;
 
-        if (estBloqueDevant || estIntersection) {
-            int index = rand.nextInt(directionsPossibles.size());
-            int nouvelleDir = directionsPossibles.get(index);
-            setDirection(nouvelleDir);
+        // Retire le demi-tour
+        if (directionsPossibles.size() > 1) {
+            directionsPossibles.remove(Integer.valueOf(getDirectionOpposee()));
+
+        }
+
+        // Si cul de sac ou non
+        if (directionsPossibles.size() > 1) {
+            boolean peutContinuer = directionsPossibles.contains(directionActuelle);
+            
+            // Si intersection
+            if (directionsPossibles.size() >= 2 || !peutContinuer){
+                setDirection(directionsPossibles.get(rand.nextInt(directionsPossibles.size())));
+            }
+        } else if (directionsPossibles.size() == 1) {
+            setDirection(directionsPossibles.get(0));
         }
 
         super.bouger(terrain);
+    }
+
+    // Récupérer la direction opposée
+    private int getDirectionOpposee() {
+        int directionOpposee = -1;
+        switch (directionActuelle) {
+            case 0:
+                directionOpposee = 1;
+                break;
+            case 1:
+                directionOpposee = 0;
+                break;
+            case 2:
+                directionOpposee = 3;
+                break;
+            case 3:
+                directionOpposee = 2;
+                break;
+        }
+        return directionOpposee;
     }
 
     // Dessiner le Fantome
