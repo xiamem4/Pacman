@@ -101,7 +101,7 @@ public class Jeu extends JPanel {
                     case KeyEvent.VK_LEFT -> newDirection = 2;
                     case KeyEvent.VK_RIGHT -> newDirection = 3;
                 }
-                
+
                 if (newDirection != -1 && pacman.peutTourner(terrain, newDirection)) {
                     pacman.setDirection(newDirection);
                 }
@@ -211,10 +211,33 @@ public class Jeu extends JPanel {
         Iterator<Fantome> it = fantomes.iterator();
         while (it.hasNext()) {
             Fantome f = it.next();
+
+            // Position futur du fantome
+            int futurFX = f.getX() + f.dx;
+            int futurFY = f.getY() + f.dy;
+
+            // Position futur du Pacman
+            int futurPX = pacman.getX() + pacman.dx;
+            int futurPY = pacman.getY() + pacman.dy;
+
             f.choisirDirectionAleatoire();
             f.bougerAlea(terrain);
 
-            // Vérification collision avec Pacman
+            // Collision "swap"
+            if (pacman != null && pacman.getX() == futurFX && pacman.getY() == futurFY && futurPX == f.getX() && futurPY == f.getY()) {
+                if (compteurSuper > 0) {
+                    score += 250;
+                    hudPanel.updateScore(score);
+                    it.remove();
+                    preparerFantome();
+                } else if (compteurInvincibilite == 0) {
+                    perdreVie();
+                    compteurInvincibilite = 20;
+                    break;
+                }
+            }
+
+            // Collision classiques
             if (pacman != null && pacman.getX() == f.getX() && pacman.getY() == f.getY()) {
                 if (compteurSuper > 0) {
                     score += 250;
