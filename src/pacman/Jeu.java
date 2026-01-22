@@ -9,6 +9,7 @@ import java.util.List;
 public class Jeu extends JPanel {
 
     private Terrain terrain;
+    private int niveau;
     private ZoneDeJeu zoneDeJeu;
     private Pacman pacman;
 
@@ -30,6 +31,24 @@ public class Jeu extends JPanel {
 
     private int compteurSuper = 0; // Temps sous la forme Super
 
+    // Gestion des fruits / clés
+
+    private int timerFruit = 0; // Compteur de ticks total
+    private boolean fruitApparu = false;
+    private int totalGommesInitial;
+    private int[] positionFruit;
+
+    private final Map<Integer, Integer> pointsFruits = Map.ofEntries(
+            Map.entry(1, 100), // Cerise
+            Map.entry(2, 300), // Fraise
+            Map.entry(3, 500), Map.entry(4, 500), // Orange
+            Map.entry(5, 700), Map.entry(6, 700), // Pomme
+            Map.entry(7, 1000), Map.entry(8, 1000), // Melon
+            Map.entry(9, 2000), Map.entry(10, 2000), // Banane
+            Map.entry(11, 3000), Map.entry(12, 3000), // Cloche
+            Map.entry(13, 5000) // Clé (13+)
+    );
+
     /**
      * Initialise le jeu
      * 
@@ -44,12 +63,16 @@ public class Jeu extends JPanel {
         terrain = new Terrain();
         terrain.chargerNiveau(niveau);
 
+        this.niveau = niveau;
+
         int[] pos = terrain.getPositionPacman();
         departX = pos[0];
         departY = pos[1];
 
         pacman = new Pacman(departX, departY);
         this.positionPorte = trouverPorte();
+
+        this.totalGommesInitial = terrain.getGommes().size();
 
         zoneDeJeu = new ZoneDeJeu(terrain, pacman, fantomes);
         enCours = true;
@@ -116,6 +139,8 @@ public class Jeu extends JPanel {
 
     // Cyle du jeu
     public void mettreAJour() {
+
+        timerFruit++;
 
         // Gestion du temps d'invincibilité
         if (compteurInvincibilite > 0) {
@@ -203,15 +228,34 @@ public class Jeu extends JPanel {
                         f1.demiTour();
                         f2.demiTour();
 
-                        // On les fait reculer immédiatement d'une case pour éviter qu'ils restent bloqués l'un dans l'autre
+                        // On les fait reculer immédiatement d'une case pour éviter qu'ils restent
+                        // bloqués l'un dans l'autre
                         f1.setX(f1.getX() + f1.dx);
                         f1.setY(f1.getY() + f1.dy);
-                    
+
                         f2.setX(f2.getX() + f2.dx);
                         f2.setY(f2.getY() + f2.dy);
                     }
                 }
             }
+        }
+
+        // Apparition du fruit
+        if (!fruitApparu && timerFruit >= 150) {
+            int gommesRestantes = terrain.getGommes().size();
+            double pourcentageMange = 1.0 - ((double) gommesRestantes / totalGommesInitial);
+
+            if (pourcentageMange >= 0.40) {
+                genererFruit();
+            }
+        }
+
+        // Collision Pacman et fruit
+        if (fruitApparu && pacman.getX() == positionFruit[0] && pacman.getY() == positionFruit[1]) {
+            score += pointsFruits.getOrDefault(this.niveau, 5000);
+            hudPanel.updateScore(score);
+            fruitApparu = false;
+            terrain.getGrille()[positionFruit[1]][positionFruit[0]] = ' ';
         }
     }
 
@@ -232,6 +276,27 @@ public class Jeu extends JPanel {
             arreter();
             JOptionPane.showMessageDialog(this, "Game Over ! Vous avez perdu.", "Défaite", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
+        }
+    }
+
+    // Faire apparaître le fruit
+    private void genererFruit() {
+        char[][] grille = terrain.getGrille();
+        List<int[]> casesVides = new ArrayList<>();
+
+        for (int y = 0; y < grille.length; y++) {
+            for (int x = 0; x < grille[0].length; x++) {
+                if (grille[y][x] == ' ' && (x != pacman.getX()) && (y != pacman.getY())) {
+                    casesVides.add(new int[] { x, y });
+                }
+            }
+        }
+
+        if (!casesVides.isEmpty()) {
+            int[] choisi = casesVides.get(new Random().nextInt(casesVides.size()));
+            this.positionFruit = choisi;
+            grille[choisi[1]][choisi[0]] = 'B';
+            fruitApparu = true;
         }
     }
 

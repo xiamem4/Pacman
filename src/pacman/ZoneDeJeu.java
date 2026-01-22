@@ -1,4 +1,5 @@
 package pacman;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -88,6 +89,10 @@ public class ZoneDeJeu extends JPanel {
                         g.setColor(Color.BLACK);
                         g.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
                         break;
+                    case 'B': // Fruit
+                        g.setColor(Color.RED); 
+                        g.fillOval(x + 4, y + 4, 12, 12);
+                        break;
                 }
             }
         }
@@ -106,7 +111,6 @@ public class ZoneDeJeu extends JPanel {
         if (pacman != null) {
             pacman.dessiner(g, TAILLE_CASE);
         }
-
 
         // Fantomes actifs
         if (fantomes != null) {
